@@ -3,579 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client-Side Validation Form</title>
+    <title>Simple Validation Form</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             padding: 20px;
         }
-
         .container {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 28px;
-        }
-
+        h1 { text-align: center; color: #333; }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
+            font-weight: bold;
             color: #555;
-            font-weight: 600;
-            font-size: 14px;
         }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="tel"],
-        input[type="number"],
-        input[type="date"],
-        select,
-        textarea {
+        input, select, textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
             font-size: 14px;
-            font-family: inherit;
-            transition: border-color 0.3s;
         }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="password"]:focus,
-        input[type="tel"]:focus,
-        input[type="number"]:focus,
-        input[type="date"]:focus,
-        select:focus,
-        textarea:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
         }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-group input.error,
-        .form-group select.error,
-        .form-group textarea.error {
+        input.error {
             border-color: #e74c3c;
             background-color: #fadbd8;
         }
-
-        .form-group input.success,
-        .form-group select.success,
-        .form-group textarea.success {
-            border-color: #27ae60;
-            background-color: #d5f4e6;
-        }
-
-        .error-message {
+        .error-text {
             color: #e74c3c;
             font-size: 12px;
-            margin-top: 5px;
+            margin-top: 3px;
             display: none;
         }
-
-        .error-message.show {
-            display: block;
-        }
-
-        .success-message {
-            color: #27ae60;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        .checkbox-group,
-        .radio-group {
-            margin: 15px 0;
-        }
-
-        .checkbox-item,
-        .radio-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        input[type="checkbox"],
-        input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        .checkbox-item label,
-        .radio-item label {
-            margin: 0;
-            font-weight: normal;
-            cursor: pointer;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 30px;
-        }
-
+        .error-text.show { display: block; }
         button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
         }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
-        .btn-reset {
-            background: #ecf0f1;
-            color: #333;
-        }
-
-        .btn-reset:hover {
-            background: #bdc3c7;
-        }
-
-        .success-alert {
-            background: #d5f4e6;
-            border: 2px solid #27ae60;
-            color: #27ae60;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-            text-align: center;
-        }
-
-        .success-alert.show {
-            display: block;
-        }
-
-        .form-info {
-            background: #e8f4f8;
-            border-left: 4px solid #3498db;
-            padding: 12px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            color: #2c3e50;
-            border-radius: 3px;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 25px;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-        }
+        button:hover { opacity: 0.9; }
+        .success { color: #27ae60; text-align: center; display: none; margin-top: 10px; }
+        .success.show { display: block; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Registration Form</h1>
-        
-        <div class="form-info">
-            📋 All fields are required. Please fill out the form carefully.
-        </div>
-
-        <div class="success-alert" id="successAlert">
-            ✓ Form submitted successfully!
-        </div>
-
-        <form id="validationForm" novalidate>
-            <!-- Full Name -->
+        <form id="form">
             <div class="form-group">
-                <label for="fullName">Full Name *</label>
-                <input 
-                    type="text" 
-                    id="fullName" 
-                    name="fullName" 
-                    placeholder="Enter your full name"
-                    required
-                >
-                <div class="error-message" id="fullNameError"></div>
-                <div class="success-message">✓ Valid name</div>
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" required>
+                <div class="error-text">Name must be at least 3 characters</div>
             </div>
-
-            <!-- Email -->
+            
             <div class="form-group">
-                <label for="email">Email Address *</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    placeholder="Enter your email"
-                    required
-                >
-                <div class="error-message" id="emailError"></div>
-                <div class="success-message">✓ Valid email</div>
+                <label for="email">Email *</label>
+                <input type="email" id="email" required>
+                <div class="error-text">Please enter a valid email</div>
             </div>
-
-            <!-- Phone Number -->
+            
             <div class="form-group">
-                <label for="phone">Phone Number *</label>
-                <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone" 
-                    placeholder="Enter your phone number (10 digits)"
-                    required
-                >
-                <div class="error-message" id="phoneError"></div>
-                <div class="success-message">✓ Valid phone</div>
+                <label for="phone">Phone *</label>
+                <input type="text" id="phone" required>
+                <div class="error-text">Phone must be 10 digits</div>
             </div>
-
-            <!-- Date of Birth -->
-            <div class="form-group">
-                <label for="dob">Date of Birth *</label>
-                <input 
-                    type="date" 
-                    id="dob" 
-                    name="dob"
-                    required
-                >
-                <div class="error-message" id="dobError"></div>
-                <div class="success-message">✓ Valid date</div>
-            </div>
-
-            <!-- Password -->
+            
             <div class="form-group">
                 <label for="password">Password *</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    placeholder="Min 8 characters, 1 uppercase, 1 number, 1 special char"
-                    required
-                >
-                <div class="error-message" id="passwordError"></div>
-                <div class="success-message">✓ Strong password</div>
+                <input type="password" id="password" required>
+                <div class="error-text">Password must be at least 6 characters</div>
             </div>
-
-            <!-- Confirm Password -->
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password *</label>
-                <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    name="confirmPassword" 
-                    placeholder="Confirm your password"
-                    required
-                >
-                <div class="error-message" id="confirmPasswordError"></div>
-                <div class="success-message">✓ Passwords match</div>
-            </div>
-
-            <!-- Country -->
+            
             <div class="form-group">
                 <label for="country">Country *</label>
-                <select id="country" name="country" required>
-                    <option value="">-- Select a Country --</option>
+                <select id="country" required>
+                    <option value="">Select Country</option>
                     <option value="india">India</option>
                     <option value="usa">USA</option>
                     <option value="uk">UK</option>
-                    <option value="canada">Canada</option>
-                    <option value="australia">Australia</option>
                 </select>
-                <div class="error-message" id="countryError"></div>
-                <div class="success-message">✓ Country selected</div>
+                <div class="error-text">Please select a country</div>
             </div>
-
-            <!-- Gender (Radio) -->
-            <div class="form-group">
-                <label>Gender *</label>
-                <div class="radio-group">
-                    <div class="radio-item">
-                        <input type="radio" id="male" name="gender" value="male" required>
-                        <label for="male">Male</label>
-                    </div>
-                    <div class="radio-item">
-                        <input type="radio" id="female" name="gender" value="female">
-                        <label for="female">Female</label>
-                    </div>
-                    <div class="radio-item">
-                        <input type="radio" id="other" name="gender" value="other">
-                        <label for="other">Other</label>
-                    </div>
-                </div>
-                <div class="error-message" id="genderError"></div>
-            </div>
-
-            <!-- Interests (Checkboxes) -->
-            <div class="form-group">
-                <label>Interests (Select at least one) *</label>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="sports" name="interests" value="sports">
-                        <label for="sports">Sports</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="music" name="interests" value="music">
-                        <label for="music">Music</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="reading" name="interests" value="reading">
-                        <label for="reading">Reading</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="coding" name="interests" value="coding">
-                        <label for="coding">Coding</label>
-                    </div>
-                </div>
-                <div class="error-message" id="interestsError"></div>
-            </div>
-
-            <!-- Comments -->
-            <div class="form-group">
-                <label for="comments">Comments (Optional)</label>
-                <textarea 
-                    id="comments" 
-                    name="comments" 
-                    placeholder="Enter any additional comments..."
-                ></textarea>
-            </div>
-
-            <!-- Terms & Conditions -->
-            <div class="form-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="terms" name="terms" required>
-                    <label for="terms">I agree to the Terms & Conditions *</label>
-                </div>
-                <div class="error-message" id="termsError"></div>
-            </div>
-
-            <!-- Form Actions -->
-            <div class="form-actions">
-                <button type="submit" class="btn-submit">Submit</button>
-                <button type="reset" class="btn-reset">Reset</button>
-            </div>
+            
+            <button type="submit">Submit</button>
+            <div class="success">✓ Form submitted successfully!</div>
         </form>
     </div>
 
     <script>
-        const form = document.getElementById('validationForm');
-        const successAlert = document.getElementById('successAlert');
-
-        // Validation Rules
-        const validationRules = {
-            fullName: {
-                validate: (value) => value.trim().length >= 3,
-                message: 'Full name must be at least 3 characters long'
-            },
-            email: {
-                validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-                message: 'Please enter a valid email address'
-            },
-            phone: {
-                validate: (value) => /^\d{10}$/.test(value.replace(/\D/g, '')),
-                message: 'Phone number must be 10 digits'
-            },
-            dob: {
-                validate: (value) => {
-                    if (!value) return false;
-                    const birthDate = new Date(value);
-                    const today = new Date();
-                    const age = today.getFullYear() - birthDate.getFullYear();
-                    return age >= 18;
-                },
-                message: 'You must be at least 18 years old'
-            },
-            password: {
-                validate: (value) => /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value),
-                message: 'Password must contain at least 8 characters, 1 uppercase letter, 1 number, and 1 special character'
-            },
-            confirmPassword: {
-                validate: (value) => {
-                    const password = document.getElementById('password').value;
-                    return value === password;
-                },
-                message: 'Passwords do not match'
-            },
-            country: {
-                validate: (value) => value !== '',
-                message: 'Please select a country'
-            },
-            gender: {
-                validate: () => document.querySelector('input[name="gender"]:checked') !== null,
-                message: 'Please select a gender'
-            },
-            interests: {
-                validate: () => document.querySelectorAll('input[name="interests"]:checked').length > 0,
-                message: 'Please select at least one interest'
-            },
-            terms: {
-                validate: () => document.getElementById('terms').checked,
-                message: 'You must agree to the terms and conditions'
-            }
+        const form = document.getElementById('form');
+        const fields = ['name', 'email', 'phone', 'password', 'country'];
+        
+        const validations = {
+            name: val => val.trim().length >= 3,
+            email: val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+            phone: val => /^\d{10}$/.test(val.replace(/\D/g, '')),
+            password: val => val.length >= 6,
+            country: val => val !== ''
         };
-
-        // Real-time validation
-        ['fullName', 'email', 'phone', 'dob', 'password', 'confirmPassword', 'country'].forEach(fieldName => {
-            const field = document.getElementById(fieldName);
-            if (field) {
-                field.addEventListener('blur', () => validateField(fieldName));
-                field.addEventListener('input', () => {
-                    if (field.classList.contains('error')) {
-                        validateField(fieldName);
-                    }
-                });
-            }
+        
+        fields.forEach(field => {
+            document.getElementById(field).addEventListener('blur', () => validateField(field));
         });
-
-        document.querySelector('input[name="gender"]')?.parentElement.addEventListener('change', () => {
-            if (document.getElementById('genderError').classList.contains('show')) {
-                validateField('gender');
-            }
-        });
-
-        document.querySelectorAll('input[name="interests"]').forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                if (document.getElementById('interestsError').classList.contains('show')) {
-                    validateField('interests');
-                }
-            });
-        });
-
-        // Validate single field
-        function validateField(fieldName) {
-            const rule = validationRules[fieldName];
-            const field = document.getElementById(fieldName);
-            const errorElement = document.getElementById(fieldName + 'Error');
-
-            if (!rule) return true;
-
-            const isValid = rule.validate(field ? field.value : '');
-
+        
+        function validateField(field) {
+            const input = document.getElementById(field);
+            const error = input.nextElementSibling;
+            const isValid = validations[field](input.value);
+            
             if (isValid) {
-                field?.classList.remove('error');
-                field?.classList.add('success');
-                errorElement?.classList.remove('show');
-                return true;
+                input.classList.remove('error');
+                error.classList.remove('show');
             } else {
-                field?.classList.remove('success');
-                field?.classList.add('error');
-                if (errorElement) {
-                    errorElement.textContent = rule.message;
-                    errorElement.classList.add('show');
-                }
-                return false;
+                input.classList.add('error');
+                error.classList.add('show');
             }
+            return isValid;
         }
-
-        // Validate all fields
-        function validateAllFields() {
-            let isFormValid = true;
-
-            for (const fieldName in validationRules) {
-                if (!validateField(fieldName)) {
-                    isFormValid = false;
-                }
-            }
-
-            return isFormValid;
-        }
-
-        // Form submission
+        
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-
-            if (validateAllFields()) {
-                successAlert.classList.add('show');
-                console.log('Form Data:', {
-                    fullName: document.getElementById('fullName').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value,
-                    dob: document.getElementById('dob').value,
-                    country: document.getElementById('country').value,
-                    gender: document.querySelector('input[name="gender"]:checked').value,
-                    interests: Array.from(document.querySelectorAll('input[name="interests"]:checked')).map(cb => cb.value),
-                    comments: document.getElementById('comments').value
-                });
-
-                // Reset form after 2 seconds
+            let allValid = true;
+            
+            fields.forEach(field => {
+                if (!validateField(field)) allValid = false;
+            });
+            
+            if (allValid) {
+                document.querySelector('.success').classList.add('show');
+                form.style.display = 'none';
                 setTimeout(() => {
                     form.reset();
-                    successAlert.classList.remove('show');
-                    document.querySelectorAll('.form-group input, .form-group select, .form-group textarea').forEach(field => {
-                        field.classList.remove('success', 'error');
-                    });
-                    document.querySelectorAll('.error-message, .success-message').forEach(msg => {
-                        msg.classList.remove('show');
-                    });
+                    form.style.display = 'block';
+                    document.querySelector('.success').classList.remove('show');
+                    fields.forEach(f => document.getElementById(f).classList.remove('error'));
                 }, 2000);
-            } else {
-                successAlert.classList.remove('show');
             }
-        });
-
-        // Reset form
-        form.addEventListener('reset', () => {
-            setTimeout(() => {
-                document.querySelectorAll('.form-group input, .form-group select, .form-group textarea').forEach(field => {
-                    field.classList.remove('success', 'error');
-                });
-                document.querySelectorAll('.error-message, .success-message').forEach(msg => {
-                    msg.classList.remove('show');
-                });
-                successAlert.classList.remove('show');
-            }, 0);
         });
     </script>
 </body>
